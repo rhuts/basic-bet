@@ -56,6 +56,9 @@ contract BasicBet is Ownable, BinaryBet {
 
     function releaseFunds() public onlyOwner onlyFinalized {
 
+        // prevent consecutive (re-entrancy) withdraws, reset game state
+        _status = BetStatus.Open;
+
         // refund when there is no single winner
         if (_choiceA == _choiceB) {
             _userA.transfer(BET_AMOUNT);
