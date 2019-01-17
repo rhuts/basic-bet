@@ -1,8 +1,9 @@
 pragma solidity ^0.5.0;
 
 import "../installed_contracts/zeppelin/contracts/ownership/Ownable.sol";
+import "./abstract/BinaryBet.sol";
 
-contract BasicBet is Ownable {
+contract BasicBet is Ownable, BinaryBet {
     // user A
     address payable private _userA;
     bool private _choiceA;
@@ -17,12 +18,7 @@ contract BasicBet is Ownable {
     // constant bet amount
     uint256 constant BET_AMOUNT = 1 ether;
 
-    // result
-    bool private _result = false;
-
-    // bet status
-    enum BetStatus {Open, Closed, Finalized}
-    BetStatus public _status;
+    // the betting contract defaults to being open to bets
     BetStatus public constant defaultStatus = BetStatus.Open;
 
     /**
@@ -30,51 +26,6 @@ contract BasicBet is Ownable {
      */
     constructor() public {
         _status = defaultStatus;
-    }
-
-    /**
-     * @return true if contract is in the open status.
-     */
-    function isOpen() public view returns (bool) {
-        return _status == BetStatus.Open;
-    }
-
-    /**
-     * @dev Throws if contract is not open to betting.
-     */
-    modifier onlyOpen() {
-        require(isOpen(), "Betting must be in the open status.");
-        _;
-    }
-
-    /**
-     * @return true if contract is in the closed status.
-     */
-    function isClosed() public view returns (bool) {
-        return _status == BetStatus.Closed;
-    }
-
-    /**
-     * @dev Throws if contract is not closed to betting.
-     */
-    modifier onlyClosed() {
-        require(isClosed(), "Betting must be in the closed status.");
-        _;
-    }
-
-    /**
-     * @return true if contract is in the finalized status.
-     */
-    function isFinalized() public view returns (bool) {
-        return _status == BetStatus.Finalized;
-    }
-
-    /**
-     * @dev Throws if contract is not finalized to betting.
-     */
-    modifier onlyFinalized() {
-        require(isFinalized(), "Betting must be in the finalized status.");
-        _;
     }
 
     function addBet(bool choice) public payable onlyOpen {
@@ -120,7 +71,5 @@ contract BasicBet is Ownable {
                 _userB.transfer(address(this).balance);
             }
         }
-
-        // send ether
     }
 }
