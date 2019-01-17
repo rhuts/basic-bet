@@ -1,0 +1,36 @@
+language: node_js
+
+notifications:
+  email:
+    recipients:
+      - roman.h1234@gmail.com
+      # - mike@gmail.com
+    on_success: always # default: change
+    on_failure: always # default: always
+
+sudo: required
+
+node_js:
+  - "10.13.0"
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - build-essential
+      - g++-4.8
+
+before_install:
+  - export CXX="g++-4.8"
+  - npm install -g npm@latest
+  - npm install -g truffle
+
+install:
+  - npm install 
+
+script:
+  - truffle test --network dev
