@@ -1,10 +1,12 @@
 pragma solidity ^0.5.0;
-/**
- * For betting games that have only two choices to bet on.
- */
-contract BinaryBet {
 
-    bool public _result = false;
+/**
+ * Consists of three stages:
+ *      Open         Bets can be placed
+ *      Closed       Bets can no longer be placed
+ *      Finalized    Result has been observed and recorded
+ */
+contract Stageable {
 
     enum BetStatus {Open, Closed, Finalized}
     BetStatus public _status;
@@ -53,19 +55,4 @@ contract BinaryBet {
         require(isFinalized(), "Betting must be in the finalized status.");
         _;
     }
-
-    /**
-     * @param choice the choice the better is betting on.
-     */
-    function addBet(bool choice) public payable;
-
-    /**
-     * @param result the result of the betting event.
-     */
-    function finalizeEvent(bool result) public;
-
-    /**
-     * @dev Distribute funds to the winner(s) or provide refund(s) if there are no winners.
-     */
-    function releaseFunds() public;
 }
